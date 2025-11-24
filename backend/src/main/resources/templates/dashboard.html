@@ -56,13 +56,15 @@
   </div>
 
   <script th:src="@{/js/app.js}"></script>
-  <script>
-    const balances = [[${accounts.stream().map(a -> a.balance).toList()}]];
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    const balances = /*[[${balances}]]*/ [];
     new Chart(document.getElementById('balanceChart'), {
       type: 'doughnut',
-      data: { datasets: [{ data: balances[0], backgroundColor: ['#06b6d4', '#3b82f6', '#8b5cf6'] }] },
+      data: { datasets: [{ data: balances, backgroundColor: ['#06b6d4', '#3b82f6', '#8b5cf6'] }] },
       options: { responsive: true, cutout: '65%' }
     });
+    /*]]>*/
   </script>
 </body>
 </html>

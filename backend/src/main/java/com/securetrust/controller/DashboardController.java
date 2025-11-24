@@ -24,10 +24,14 @@ public class DashboardController {
         var accounts = accountRepo.findAll();
         customers.forEach(c -> c.setAccounts(accountRepo.findByCustomerId(c.getId())));
         double total = accounts.stream().mapToDouble(a -> a.getBalance()).sum();
+        
+        // Extract balances for the chart
+        var balances = accounts.stream().map(a -> a.getBalance()).toList();
 
         model.addAttribute("customers", customers);
         model.addAttribute("accounts", accounts);
         model.addAttribute("totalBalance", total);
+        model.addAttribute("balances", balances);
         return "dashboard";
     }
 }
