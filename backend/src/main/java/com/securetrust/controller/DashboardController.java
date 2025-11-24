@@ -10,10 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class DashboardController {
     private final CustomerRepository customerRepo;
     private final AccountRepository accountRepo;
+    private final TransactionRepository transactionRepo;
 
-    public DashboardController(CustomerRepository customerRepo, AccountRepository accountRepo) {
+    public DashboardController(CustomerRepository customerRepo, 
+                              AccountRepository accountRepo,
+                              TransactionRepository transactionRepo) {
         this.customerRepo = customerRepo;
         this.accountRepo = accountRepo;
+        this.transactionRepo = transactionRepo;
     }
 
     @GetMapping({"/", "/dashboard"})
@@ -27,11 +31,16 @@ public class DashboardController {
         
         // Extract balances for the chart
         var balances = accounts.stream().map(a -> a.getBalance()).toList();
+        
+        // Get recent transactions
+        var recentTransactions = transactionRepo.findTop10ByOrderByTransactionDateDesc();
 
         model.addAttribute("customers", customers);
         model.addAttribute("accounts", accounts);
         model.addAttribute("totalBalance", total);
         model.addAttribute("balances", balances);
+        model.addAttribute("recentTransactions", recentTransactions);
+        model.addAttribute("totalAccounts", accounts.size());
         return "dashboard";
     }
 }
