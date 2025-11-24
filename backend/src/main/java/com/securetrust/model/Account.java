@@ -29,4 +29,5 @@ public class Account {
     public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
     public Double getBalance() { return balance; }
     public void setBalance(Double balance) { this.balance = balance; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }

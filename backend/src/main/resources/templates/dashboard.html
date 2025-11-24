@@ -48,7 +48,7 @@
           <tr th:each="c : ${customers}">
             <td class="px-6 py-4" th:text="${c.name}"></td>
             <td class="px-6 py-4" th:text="${c.email}"></td>
-            <td class="px-6 py-4 font-bold" th:text="${#aggregates.sum(c.accounts.![balance])}"></td>
+            <td class="px-6 py-4 font-bold" th:text="${c.accounts != null ? #aggregates.sum(c.accounts.![balance]) : 0}"></td>
           </tr>
         </tbody>
       </table>
