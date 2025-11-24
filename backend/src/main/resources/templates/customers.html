@@ -115,7 +115,7 @@
       </div>
       <div class="bg-white rounded-xl shadow-lg p-6">
         <h4 class="text-sm font-medium text-gray-600 mb-2">Total Accounts</h4>
-        <p class="text-3xl font-bold text-gray-800" th:text="${#lists.size(customers) > 0 ? #lists.size(customers[0].accounts) + #lists.size(customers.size() > 1 ? customers[1].accounts : {}) + #lists.size(customers.size() > 2 ? customers[2].accounts : {}) : 0}">0</p>
+        <p class="text-3xl font-bold text-gray-800" th:text="${totalAccounts}">0</p>
         <p class="text-xs text-gray-500 mt-2">All account types</p>
       </div>
       <div class="bg-white rounded-xl shadow-lg p-6">

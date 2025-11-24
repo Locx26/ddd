@@ -62,6 +62,13 @@ public class Customer {
     
     // Helper method for full name
     public String getFullName() {
-        return firstName + " " + surname;
+        if (firstName != null && surname != null) {
+            return firstName + " " + surname;
+        } else if (firstName != null) {
+            return firstName;
+        } else if (surname != null) {
+            return surname;
+        }
+        return "Unknown";
     }
 }

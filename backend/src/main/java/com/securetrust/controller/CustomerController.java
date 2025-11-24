@@ -29,7 +29,14 @@ public class CustomerController {
         
         var customers = customerRepository.findAll();
         customers.forEach(c -> c.setAccounts(accountRepository.findByCustomerId(c.getId())));
+        
+        // Calculate total accounts
+        int totalAccounts = customers.stream()
+            .mapToInt(c -> c.getAccounts() != null ? c.getAccounts().size() : 0)
+            .sum();
+        
         model.addAttribute("customers", customers);
+        model.addAttribute("totalAccounts", totalAccounts);
         return "customers";
     }
     
