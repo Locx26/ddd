@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTrust - Customers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="bg-gray-50">
+  <!-- Sidebar -->
+  <div class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+    <div class="p-6">
+      <h1 class="text-2xl font-bold">SecureTrust</h1>
+      <p class="text-xs text-gray-400">Banking System</p>
+    </div>
+    <nav class="mt-8">
+      <a href="/dashboard" class="block py-3 px-6 hover:bg-cyan-600/10 font-medium">
+        <span class="mr-2">📊</span> Dashboard
+      </a>
+      <a href="/customers" class="block py-3 px-6 bg-cyan-600/20 border-l-4 border-cyan-500 font-medium">
+        <span class="mr-2">👥</span> Customers
+      </a>
+      <a href="/transactions" class="block py-3 px-6 hover:bg-cyan-600/10 font-medium">
+        <span class="mr-2">💳</span> Transactions
+      </a>
+      <a href="/logout" class="block py-3 px-6 hover:bg-red-600/10 font-medium mt-8">
+        <span class="mr-2">🚪</span> Logout
+      </a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="ml-64 p-8">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-4xl font-bold text-gray-800">Customer Management</h2>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
+      <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+      <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Customers Table -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="px-6 py-4 bg-gray-50 border-b">
+        <h3 class="text-xl font-semibold text-gray-800">All Customers</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Customer ID</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Address</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Accounts</th>
+              <th class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase">Total Balance</th>
+              <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr th:if="${#lists.isEmpty(customers)}" class="text-center">
+              <td colspan="8" class="px-6 py-8 text-gray-500">No customers found</td>
+            </tr>
+            <tr th:each="c : ${customers}" class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm font-medium text-gray-900" th:text="${c.customerId}">CUST001</td>
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <div class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-white font-bold mr-3">
+                    <span th:text="${c.firstName != null ? c.firstName.substring(0,1) : '?'}">J</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900" th:text="${c.fullName}">John Doe</p>
+                    <p class="text-xs text-gray-500" th:text="${'Joined ' + #temporals.format(c.createdAt, 'MMM dd, yyyy')}">Joined Jan 01, 2025</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-600" th:text="${c.email}">john@example.com</td>
+              <td class="px-6 py-4 text-sm text-gray-600" th:text="${c.phoneNumber}">+1234567890</td>
+              <td class="px-6 py-4 text-sm text-gray-600" th:text="${c.address}">123 Main St</td>
+              <td class="px-6 py-4 text-sm">
+                <div class="space-y-1">
+                  <div th:each="acc : ${c.accounts}" class="flex items-center">
+                    <span class="px-2 py-1 text-xs font-semibold rounded"
+                          th:classappend="${acc.accountType.name() == 'SAVINGS'} ? 'bg-green-100 text-green-700' : (${acc.accountType.name() == 'INVESTMENT'} ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700')"
+                          th:text="${acc.accountNumber}">SAV001</span>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-right font-bold text-green-600">
+                $<span th:text="${c.accounts != null ? #numbers.formatDecimal(#aggregates.sum(c.accounts.![balance]),1,2,'COMMA') : '0.00'}">0.00</span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <a th:href="@{/customers/{id}(id=${c.id})}" class="text-cyan-600 hover:text-cyan-700 text-sm font-medium">
+                  View Details →
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Customer Statistics -->
+    <div class="grid grid-cols-3 gap-6 mt-8">
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h4 class="text-sm font-medium text-gray-600 mb-2">Total Customers</h4>
+        <p class="text-3xl font-bold text-gray-800" th:text="${#lists.size(customers)}">0</p>
+        <p class="text-xs text-gray-500 mt-2">Active customer base</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h4 class="text-sm font-medium text-gray-600 mb-2">Total Accounts</h4>
+        <p class="text-3xl font-bold text-gray-800" th:text="${#lists.size(customers) > 0 ? #lists.size(customers[0].accounts) + #lists.size(customers.size() > 1 ? customers[1].accounts : {}) + #lists.size(customers.size() > 2 ? customers[2].accounts : {}) : 0}">0</p>
+        <p class="text-xs text-gray-500 mt-2">All account types</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h4 class="text-sm font-medium text-gray-600 mb-2">Average Balance</h4>
+        <p class="text-3xl font-bold text-gray-800">
+          $<span th:text="${#lists.size(customers) > 0 ? #numbers.formatDecimal(#aggregates.sum(customers.![accounts != null ? #aggregates.sum(accounts.![balance]) : 0]) / #lists.size(customers),1,2,'COMMA') : '0.00'}">0.00</span>
+        </p>
+        <p class="text-xs text-gray-500 mt-2">Per customer</p>
+      </div>
+    </div>
+  </div>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>
