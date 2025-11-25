@@ -53,7 +53,7 @@ public class TransactionController {
         try {
             bankingService.deposit(accountNumber, amount, description);
             redirectAttributes.addFlashAttribute("successMessage", 
-                "Deposit of $" + String.format("%.2f", amount) + " successful!");
+                "Deposit of BWP " + String.format("%,.2f", amount) + " successful!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
@@ -74,7 +74,7 @@ public class TransactionController {
         try {
             bankingService.withdraw(accountNumber, amount, description);
             redirectAttributes.addFlashAttribute("successMessage", 
-                "Withdrawal of $" + String.format("%.2f", amount) + " successful!");
+                "Withdrawal of BWP " + String.format("%,.2f", amount) + " successful!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
@@ -96,7 +96,7 @@ public class TransactionController {
         try {
             bankingService.transfer(fromAccount, toAccount, amount, description);
             redirectAttributes.addFlashAttribute("successMessage", 
-                "Transfer of $" + String.format("%.2f", amount) + " successful!");
+                "Transfer of BWP " + String.format("%,.2f", amount) + " successful!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
