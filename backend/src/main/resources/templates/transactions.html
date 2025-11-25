@@ -380,7 +380,7 @@
                 <td class="px-6 py-4 text-right">
                   <span class="text-lg font-bold"
                         th:classappend="${txn.type.name() == 'DEPOSIT' || txn.type.name() == 'TRANSFER_IN'} ? 'text-green-600' : 'text-red-600'"
-                        th:text="${txn.type.name() == 'DEPOSIT' || txn.type.name() == 'TRANSFER_IN' ? '+' : '-'} + 'P' + ${#numbers.formatDecimal(txn.amount,1,2,'COMMA')}">+P1,000.00</span>
+                        th:text="${txn.type.name() == 'DEPOSIT' || txn.type.name() == 'TRANSFER_IN' ? '+BWP ' : '-BWP '} + ${#numbers.formatDecimal(txn.amount,1,2,'COMMA')}">+BWP 1,000.00</span>
                 </td>
                 <td class="px-6 py-4 text-right text-gray-900 font-medium">
                   BWP <span th:text="${#numbers.formatDecimal(txn.balanceAfter,1,2,'COMMA')}">5,000.00</span>

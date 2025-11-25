@@ -281,8 +281,8 @@
                 <div class="text-right">
                   <p class="font-bold text-lg"
                      th:classappend="${txn.type.name() == 'DEPOSIT' || txn.type.name() == 'TRANSFER_IN'} ? 'text-green-600' : 'text-red-600'"
-                     th:text="${txn.type.name() == 'DEPOSIT' || txn.type.name() == 'TRANSFER_IN' ? '+' : '-'} + 'P' + ${#numbers.formatDecimal(txn.amount,1,2,'COMMA')}">
-                    P1,000
+                     th:text="${txn.type.name() == 'DEPOSIT' || txn.type.name() == 'TRANSFER_IN' ? '+BWP ' : '-BWP '} + ${#numbers.formatDecimal(txn.amount,1,2,'COMMA')}">
+                    BWP 1,000
                   </p>
                   <p class="text-xs text-gray-400" th:text="${#temporals.format(txn.transactionDate, 'dd MMM, HH:mm')}">25 Nov, 10:00</p>
                 </div>
