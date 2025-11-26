@@ -2,6 +2,7 @@ package com.securetrust.model;
 
 public enum AccountType {
     SAVINGS("Savings Account"),
+    CHECKING("Checking Account"),
     INVESTMENT("Investment Account"),
     CHEQUE("Cheque Account");
 

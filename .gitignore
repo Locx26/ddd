@@ -1,10 +1,10 @@
-target/
-data/
 *.class
+*.ear
+*.iml
 *.jar
 *.war
-*.ear
+.DS_Store
 .idea/
 .vscode/
-*.iml
-.DS_Store
+data/
+target/
