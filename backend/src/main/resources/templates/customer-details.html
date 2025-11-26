@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTrust Bank - Customer Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'st-primary': '#0066FF',
+            'st-secondary': '#00D4AA',
+            'st-dark': '#0A1628',
+            'st-accent': '#7C3AED',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .sidebar-link.active { background: linear-gradient(90deg, rgba(0,102,255,0.1) 0%, transparent 100%); border-left: 3px solid #0066FF; }
+    .sidebar-link:hover { background: rgba(0,102,255,0.05); }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Top Header -->
+  <header class="bg-st-dark text-white fixed top-0 left-0 right-0 z-50 shadow-xl">
+    <div class="flex items-center justify-between h-16 px-6">
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-st-primary to-st-secondary rounded-xl flex items-center justify-center shadow-lg">
+            <i class="fas fa-shield-alt text-white text-sm"></i>
+          </div>
+          <div class="hidden md:block">
+            <h1 class="text-lg font-bold">SecureTrust</h1>
+            <p class="text-xs text-gray-400 -mt-1">Banking System</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <a href="/dashboard" class="p-2.5 bg-white/10 rounded-xl hover:bg-white/20 transition-colors" title="Home">
+          <i class="fas fa-home text-gray-300"></i>
+        </a>
+        <a href="/dashboard" class="p-2.5 bg-white/10 rounded-xl hover:bg-white/20 transition-colors relative" title="Notifications">
+          <i class="fas fa-bell text-gray-300"></i>
+          <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+        </a>
+        <a href="/dashboard" class="p-2.5 bg-white/10 rounded-xl hover:bg-white/20 transition-colors" title="Settings">
+          <i class="fas fa-cog text-gray-300"></i>
+        </a>
+        <div class="h-8 w-px bg-gray-700 mx-2"></div>
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-st-primary to-st-accent rounded-xl flex items-center justify-center">
+            <span class="text-white font-bold text-sm">AD</span>
+          </div>
+          <div class="hidden md:block">
+            <p class="text-sm font-medium" th:text="${session.user}">admin@securetrust.com</p>
+            <p class="text-xs text-gray-400">Administrator</p>
+          </div>
+        </div>
+        <a href="/logout" class="ml-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition-colors flex items-center text-sm font-medium">
+          <i class="fas fa-sign-out-alt mr-2"></i>
+          <span class="hidden md:inline">Logout</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex pt-16">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-gray-100 shadow-sm">
+      <nav class="p-4 space-y-2">
+        <a href="/dashboard" class="sidebar-link flex items-center px-4 py-3 text-gray-600 rounded-xl transition-all">
+          <div class="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-th-large text-gray-500"></i>
+          </div>
+          <span>Dashboard</span>
+        </a>
+        
+        <a href="/customers" class="sidebar-link active flex items-center px-4 py-3 text-gray-700 rounded-xl transition-all">
+          <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-users text-st-primary"></i>
+          </div>
+          <span class="font-medium">Customers</span>
+        </a>
+        
+        <a href="/transactions" class="sidebar-link flex items-center px-4 py-3 text-gray-600 rounded-xl transition-all">
+          <div class="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-exchange-alt text-gray-500"></i>
+          </div>
+          <span>Transactions</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 flex-1 p-8">
+      <!-- Back Button -->
+      <a href="/customers" class="inline-flex items-center text-gray-600 hover:text-st-primary mb-6 transition-colors">
+        <i class="fas fa-arrow-left mr-2"></i>Back to Customers
+      </a>
+
+      <!-- Success/Error Messages -->
+      <div th:if="${successMessage}" class="mb-6 p-5 bg-green-50 border border-green-200 rounded-2xl flex items-center">
+        <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+          <i class="fas fa-check text-green-600 text-2xl"></i>
+        </div>
+        <div>
+          <p class="font-bold text-green-800 text-lg">Success!</p>
+          <p class="text-green-600" th:text="${successMessage}"></p>
+        </div>
+      </div>
+      <div th:if="${errorMessage}" class="mb-6 p-5 bg-red-50 border border-red-200 rounded-2xl flex items-center">
+        <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mr-4">
+          <i class="fas fa-exclamation text-red-600 text-2xl"></i>
+        </div>
+        <div>
+          <p class="font-bold text-red-800 text-lg">Error</p>
+          <p class="text-red-600" th:text="${errorMessage}"></p>
+        </div>
+      </div>
+
+      <!-- Customer Header -->
+      <div class="bg-gradient-to-r from-st-dark via-gray-800 to-st-dark rounded-3xl p-8 text-white mb-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-96 h-96 bg-st-primary/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+        <div class="relative z-10 flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-st-primary to-st-accent flex items-center justify-center text-white font-bold text-3xl shadow-2xl mr-6">
+              <span th:text="${customer.firstName != null && customer.surname != null ? customer.firstName.substring(0,1) + customer.surname.substring(0,1) : '??'}">JD</span>
+            </div>
+            <div>
+              <h1 class="text-4xl font-bold mb-2" th:text="${customer.fullName}">John Doe</h1>
+              <p class="text-gray-400 flex items-center">
+                <i class="fas fa-id-card mr-2"></i>
+                <span th:text="${customer.customerId}">CUST001</span>
+              </p>
+              <p class="text-gray-400 flex items-center mt-1">
+                <i class="fas fa-calendar mr-2"></i>
+                Member since <span class="ml-1" th:text="${#temporals.format(customer.createdAt, 'MMMM yyyy')}">November 2025</span>
+              </p>
+            </div>
+          </div>
+          <div class="flex space-x-3">
+            <button onclick="openEditModal()" class="px-5 py-2.5 bg-white/20 text-white rounded-xl hover:bg-white/30 transition-colors flex items-center font-medium">
+              <i class="fas fa-edit mr-2"></i>Edit
+            </button>
+            <a th:href="@{/transactions}" class="px-5 py-2.5 bg-st-primary text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center font-medium shadow-lg">
+              <i class="fas fa-plus mr-2"></i>New Transaction
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Customer Information -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center">
+            <i class="fas fa-user-circle text-st-primary mr-3"></i>Contact Information
+          </h3>
+          <div class="space-y-4">
+            <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-envelope text-st-primary"></i>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Email Address</p>
+                <p class="font-medium text-gray-900" th:text="${customer.email ?: 'Not provided'}">john@example.com</p>
+              </div>
+            </div>
+            <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-phone text-green-600"></i>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Phone Number</p>
+                <p class="font-medium text-gray-900" th:text="${customer.phoneNumber ?: 'Not provided'}">+267 71 234 567</p>
+              </div>
+            </div>
+            <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-map-marker-alt text-purple-600"></i>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Address</p>
+                <p class="font-medium text-gray-900" th:text="${customer.address ?: 'Not provided'}">123 Main Street</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-bold text-gray-900 flex items-center">
+              <i class="fas fa-wallet text-st-primary mr-3"></i>Accounts
+            </h3>
+            <span class="px-3 py-1 bg-blue-100 text-st-primary text-sm font-semibold rounded-full" 
+                  th:text="${#lists.size(customer.accounts)} + ' account(s)'">2 account(s)</span>
+          </div>
+          
+          <div th:if="${#lists.isEmpty(customer.accounts)}" class="text-center py-12">
+            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-wallet text-4xl text-gray-300"></i>
+            </div>
+            <p class="text-gray-600 font-medium text-lg">No accounts yet</p>
+            <p class="text-sm text-gray-400">This customer has no accounts</p>
+          </div>
+          
+          <div class="space-y-4" th:unless="${#lists.isEmpty(customer.accounts)}">
+            <div th:each="acc : ${customer.accounts}" class="p-5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-14 h-14 rounded-xl flex items-center justify-center mr-4"
+                       th:classappend="${acc.accountType.name() == 'SAVINGS'} ? 'bg-green-100' : (${acc.accountType.name() == 'INVESTMENT'} ? 'bg-purple-100' : (${acc.accountType.name() == 'CHECKING'} ? 'bg-orange-100' : 'bg-blue-100'))">
+                    <i class="fas text-xl"
+                       th:classappend="${acc.accountType.name() == 'SAVINGS'} ? 'fa-piggy-bank text-green-600' : (${acc.accountType.name() == 'INVESTMENT'} ? 'fa-chart-line text-purple-600' : (${acc.accountType.name() == 'CHECKING'} ? 'fa-money-check text-orange-600' : 'fa-money-check-alt text-blue-600'))"></i>
+                  </div>
+                  <div>
+                    <p class="font-bold text-gray-900" th:text="${acc.accountType.displayName}">Savings Account</p>
+                    <p class="text-sm text-gray-500 font-mono" th:text="${acc.accountNumber}">SAV001</p>
+                    <p class="text-xs text-gray-400" th:text="${acc.branch ?: 'Main Branch'}">Main Branch</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-2xl font-bold text-gray-900">BWP <span th:text="${#numbers.formatDecimal(acc.balance,1,2,'COMMA')}">12,500.00</span></p>
+                  <p class="text-xs text-gray-400" th:text="'Opened ' + ${#temporals.format(acc.openedAt, 'dd MMM yyyy')}">Opened 25 Nov 2025</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Total Balance -->
+          <div class="mt-6 p-5 bg-gradient-to-r from-st-primary to-st-accent rounded-xl text-white" th:unless="${#lists.isEmpty(customer.accounts)}">
+            <div class="flex justify-between items-center">
+              <span class="font-medium">Total Balance</span>
+              <span class="text-3xl font-bold">BWP <span th:text="${#numbers.formatDecimal(#aggregates.sum(customer.accounts.![balance]),1,2,'COMMA')}">0.00</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit Customer Modal -->
+  <div id="editModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+      <div class="bg-gradient-to-r from-st-primary to-st-accent p-6">
+        <h3 class="text-xl font-bold text-white flex items-center">
+          <i class="fas fa-user-edit mr-3"></i>Edit Customer
+        </h3>
+      </div>
+      <form th:action="@{/customers/{id}/update(id=${customer.id})}" method="post" class="p-6 space-y-5">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
+            <input type="text" name="firstName" th:value="${customer.firstName}" required
+                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-st-primary focus:ring-4 focus:ring-blue-100 transition-all">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Surname</label>
+            <input type="text" name="surname" th:value="${customer.surname}" required
+                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-st-primary focus:ring-4 focus:ring-blue-100 transition-all">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+          <input type="email" name="email" th:value="${customer.email}"
+                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-st-primary focus:ring-4 focus:ring-blue-100 transition-all">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+          <input type="text" name="phoneNumber" th:value="${customer.phoneNumber}"
+                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-st-primary focus:ring-4 focus:ring-blue-100 transition-all">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Address</label>
+          <textarea name="address" rows="2" th:text="${customer.address}"
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-st-primary focus:ring-4 focus:ring-blue-100 transition-all resize-none"></textarea>
+        </div>
+        <div class="flex space-x-3 pt-4">
+          <button type="button" onclick="closeEditModal()" class="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="flex-1 py-3 bg-st-primary text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">
+            <i class="fas fa-save mr-2"></i>Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openEditModal() {
+      document.getElementById('editModal').classList.remove('hidden');
+      document.getElementById('editModal').classList.add('flex');
+    }
+    function closeEditModal() {
+      document.getElementById('editModal').classList.add('hidden');
+      document.getElementById('editModal').classList.remove('flex');
+    }
+    // Close modal when clicking outside
+    document.getElementById('editModal').addEventListener('click', function(e) {
+      if (e.target === this) closeEditModal();
+    });
+  </script>
+</body>
+</html>

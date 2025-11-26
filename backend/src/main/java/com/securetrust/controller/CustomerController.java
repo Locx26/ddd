@@ -99,4 +99,33 @@ public class CustomerController {
         
         return "redirect:/customers/" + id;
     }
+    
+    @PostMapping("/{id}/delete")
+    public String deleteCustomer(@PathVariable Long id,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+        
+        try {
+            var customer = customerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+            
+            // Check if customer has any accounts
+            var accounts = accountRepository.findByCustomerId(id);
+            if (accounts != null && !accounts.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", 
+                    "Cannot delete customer '" + customer.getFullName() + "' because they have " + accounts.size() + " active account(s). Please close all accounts first.");
+                return "redirect:/customers";
+            }
+            
+            customerRepository.delete(customer);
+            redirectAttributes.addFlashAttribute("successMessage", "Customer '" + customer.getFullName() + "' deleted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Cannot delete customer: " + e.getMessage());
+        }
+        
+        return "redirect:/customers";
+    }
 }
